@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProgressTracker</title>
+    <style>
+        /* Basic styling for the header, main content, and footer */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        main {
+            padding: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        /* Additional styles can be added here */
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>ProgressTracker</h1>
+        </header>
+        <main>
+            <!-- User registration and login components -->
+            <div v-if="!userLoggedIn">
+                <h2>Login or Sign Up</h2>
+                <input v-model="newUser" placeholder="Username">
+                <button @click="login">Login</button>
+                <button @click="signup">Sign Up</button>
+            </div>
+            <!-- Goal creation form -->
+            <div v-else>
+                <h2>Create a New Goal</h2>
+                <input v-model="newGoal.title" placeholder="Goal Title">
+                <textarea v-model="newGoal.description" placeholder="Goal Description"></textarea>
+                <input type="date" v-model="newGoal.dueDate">
+                <button @click="createGoal">Create Goal</button>
+            </div>
+            <!-- Basic dashboard display -->
+            <div>
+                <h2>My Goals</h2>
+                <ul>
+                    <li v-for="goal in goals" :key="goal.id">
+                        <h3>{{ goal.title }}</h3>
+                        <p>{{ goal.description }}</p>
+                        <p>Due Date: {{ goal.dueDate }}</p>
+                        <button @click="updateProgress(goal)">Update Progress</button>
+                    </li>
+                </ul>
+            </div>
+        </main>
+        <footer>
+            <!-- Footer content -->
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.6/dist/vue.global.min.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    userLoggedIn: false,
+                    newUser: "",
+                    newGoal: {
+                        title: "",
+                        description: "",
+                        dueDate: "",
+                    },
+                    goals: [],
+                };
+            },
+            methods: {
+                login() {
+                    // Simulate login logic
+                    this.userLoggedIn = true;
+                },
+                signup() {
+                    // Simulate signup logic
+                    this.userLoggedIn = true;
+                },
+                createGoal() {
+                    // Simulate goal creation logic
+                    if (this.newGoal.title && this.newGoal.dueDate) {
+                        this.goals.push({
+                            id: Date.now(),
+                            title: this.newGoal.title,
+                            description: this.newGoal.description,
+                            dueDate: this.newGoal.dueDate,
+                            progress: 0,
+                        });
+                        this.newGoal = {
+                            title: "",
+                            description: "",
+                            dueDate: "",
+                        };
+                    }
+                },
+                updateProgress(goal) {
+                    // Simulate goal progress update logic
+                    goal.progress += 10;
+                    if (goal.progress >= 100) {
+                        goal.progress = 100;
+                    }
+                },
+            },
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+</html>
+
