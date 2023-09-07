@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +9,14 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f0f0f0;
         }
         header {
             background-color: #007BFF;
             color: #fff;
             text-align: center;
-            padding: 10px;
+            padding: 20px;
+            font-size: 24px;
         }
         main {
             padding: 20px;
@@ -23,47 +24,101 @@
         footer {
             text-align: center;
             padding: 10px;
-            background-color: #f0f0f0;
+            background-color: #007BFF;
+            color: #fff;
         }
-        /* Additional styles can be added here */
+        /* Styles for components */
+        .login-form, .goal-form, .goal-list {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        progress {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <header>
             <h1>ProgressTracker</h1>
+            <button v-if="userLoggedIn" @click="logout">Logout</button>
         </header>
         <main>
             <!-- User registration and login components -->
-            <div v-if="!userLoggedIn">
+            <div v-if="!userLoggedIn" class="login-form">
                 <h2>Login or Sign Up</h2>
                 <input v-model="newUser" placeholder="Username">
                 <button @click="login">Login</button>
                 <button @click="signup">Sign Up</button>
             </div>
             <!-- Goal creation form -->
-            <div v-else>
+            <div v-else class="goal-form">
                 <h2>Create a New Goal</h2>
                 <input v-model="newGoal.title" placeholder="Goal Title">
                 <textarea v-model="newGoal.description" placeholder="Goal Description"></textarea>
                 <input type="date" v-model="newGoal.dueDate">
                 <button @click="createGoal">Create Goal</button>
             </div>
-            <!-- Basic dashboard display -->
-            <div>
+            <!-- Goal list with filtering -->
+            <div class="goal-list">
                 <h2>My Goals</h2>
+                <div>
+                    <label>Show:</label>
+                    <select v-model="filter">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="incomplete">Incomplete</option>
+                    </select>
+                </div>
                 <ul>
-                    <li v-for="goal in goals" :key="goal.id">
+                    <li v-for="goal in filteredGoals" :key="goal.id">
                         <h3>{{ goal.title }}</h3>
                         <p>{{ goal.description }}</p>
                         <p>Due Date: {{ goal.dueDate }}</p>
+                        <progress :value="goal.progress" max="100"></progress>
                         <button @click="updateProgress(goal)">Update Progress</button>
+                        <button @click="deleteGoal(goal)">Delete</button>
                     </li>
                 </ul>
             </div>
         </main>
         <footer>
-            <!-- Footer content -->
+            &copy; 2023 ProgressTracker - Created by Namra Patel
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.6/dist/vue.global.min.js"></script>
@@ -77,9 +132,22 @@
                         title: "",
                         description: "",
                         dueDate: "",
+                        progress: 0,
                     },
                     goals: [],
+                    filter: "all",
                 };
+            },
+            computed: {
+                filteredGoals() {
+                    if (this.filter === "completed") {
+                        return this.goals.filter((goal) => goal.progress === 100);
+                    } else if (this.filter === "incomplete") {
+                        return this.goals.filter((goal) => goal.progress < 100);
+                    } else {
+                        return this.goals;
+                    }
+                },
             },
             methods: {
                 login() {
@@ -89,6 +157,10 @@
                 signup() {
                     // Simulate signup logic
                     this.userLoggedIn = true;
+                },
+                logout() {
+                    // Simulate logout logic
+                    this.userLoggedIn = false;
                 },
                 createGoal() {
                     // Simulate goal creation logic
@@ -104,21 +176,30 @@
                             title: "",
                             description: "",
                             dueDate: "",
+                            progress: 0,
                         };
                     }
                 },
                 updateProgress(goal) {
                     // Simulate goal progress update logic
-                    goal.progress += 10;
+                    if (goal.progress < 100) {
+                        goal.progress += 10;
+                    }
                     if (goal.progress >= 100) {
                         goal.progress = 100;
+                    }
+                },
+                deleteGoal(goal) {
+                    // Simulate goal deletion logic
+                    const index = this.goals.indexOf(goal);
+                    if (index !== -1) {
+                        this.goals.splice(index, 1);
                     }
                 },
             },
         });
 
-        app.mount('#app');
+        app.mount("#app");
     </script>
 </body>
 </html>
-
